@@ -1,7 +1,13 @@
+import { fileURLToPath, URL } from 'node:url'
+
+// Resolve content globs against this config file's directory so the build
+// finds source files regardless of the CWD it's invoked from (e.g. Vercel).
+const here = fileURLToPath(new URL('.', import.meta.url)).replace(/\\/g, '/')
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
-  content: ['./index.html', './src/**/*.{js,jsx}'],
+  content: [`${here}index.html`, `${here}src/**/*.{js,jsx}`],
   theme: {
     extend: {
       colors: {

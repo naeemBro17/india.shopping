@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-2: #f0ede8;
+  --text-primary: #1a1a18;
+  --text-secondary: #6b6860;
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #2563eb;
+  --accent-warm: #c2410c;
+  --success: #16a34a;
+  --warning: #d97706;
+}
+
+.dark {
+  --bg: #0f0f0e;
+  --surface: #1a1a18;
+  --surface-2: #242420;
+  --text-primary: #f0ede8;
+  --text-secondary: #9a9890;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #2563eb;
+  --accent-warm: #c2410c;
+  --success: #16a34a;
+  --warning: #d97706;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+/* Hide scrollbars on horizontal filter rows */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@layer components {
+  .tint-accent {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .tint-warm {
+    background: color-mix(in srgb, var(--accent-warm) 14%, transparent);
+    color: var(--accent-warm);
+    border-color: color-mix(in srgb, var(--accent-warm) 30%, transparent);
+  }
+  .tint-success {
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 30%, transparent);
+  }
+  .tint-warning {
+    background: color-mix(in srgb, var(--warning) 14%, transparent);
+    color: var(--warning);
+    border-color: color-mix(in srgb, var(--warning) 30%, transparent);
+  }
+}
+
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--surface-2) 0px,
+    var(--border) 40px,
+    var(--surface-2) 80px
+  );
+  background-size: 800px 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
