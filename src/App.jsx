@@ -20,7 +20,7 @@ function useDarkModeSync() {
     const root = document.documentElement
     root.classList.toggle('dark', !!dark)
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', dark ? '#0F0F0E' : '#F8F7F4')
+    if (meta) meta.setAttribute('content', dark ? '#0b0b0c' : '#ffffff')
   }, [dark])
 }
 

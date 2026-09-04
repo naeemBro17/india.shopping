@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
 import { useStore, storeItemStats, PRIORITY_ORDER } from '../store/useStore.js'
-import { useToast } from '../hooks/useToast.js'
 import TopBar from '../components/TopBar.jsx'
 import ProductRow from '../components/ProductRow.jsx'
 import ProductSheet from '../components/ProductSheet.jsx'
@@ -15,7 +14,6 @@ export default function StoreDetail() {
   const stores = useStore((s) => s.stores)
   const products = useStore((s) => s.products)
   const toggleBought = useStore((s) => s.toggleBought)
-  const toast = useToast((s) => s.toast)
   const [sheet, setSheet] = useState(null)
   const [storeSheet, setStoreSheet] = useState(null)
 
@@ -97,12 +95,7 @@ export default function StoreDetail() {
                 product={p}
                 stores={stores}
                 onOpen={(prod) => setSheet(prod)}
-                onToggle={(prod) => {
-                  markBoughtWithFeedback(prod, toggleBought)
-                  toast(prod.is_bought ? 'Marked as not bought' : 'Marked as bought', {
-                    tone: prod.is_bought ? 'default' : 'success',
-                  })
-                }}
+                onToggle={(prod) => markBoughtWithFeedback(prod, toggleBought)}
               />
             ))
           )}
