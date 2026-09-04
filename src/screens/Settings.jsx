@@ -3,7 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { useToast } from '../hooks/useToast.js'
 import { useOnlineStatus } from '../hooks/useOnlineStatus.js'
 import TopBar from '../components/TopBar.jsx'
-import { Card, Switch, Pill, cx } from '../components/ui.jsx'
+import { Card, Switch, cx } from '../components/ui.jsx'
 import { TrashIcon } from '../components/Icons.jsx'
 
 const APP_VERSION = '1.0.0'
@@ -12,7 +12,7 @@ export default function Settings() {
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
   const toggleDarkMode = useStore((s) => s.toggleDarkMode)
-  const setTripMode = useStore((s) => s.setTripMode)
+  const toggleMute = useStore((s) => s.toggleMute)
   const clearAllData = useStore((s) => s.clearAllData)
   const toast = useToast((s) => s.toast)
   const online = useOnlineStatus()
@@ -32,28 +32,16 @@ export default function Settings() {
             <Switch checked={settings.dark_mode} onChange={toggleDarkMode} label="Dark mode" />
           </Row>
 
-          <div className="px-4 py-3.5">
-            <p className="text-[15px] font-medium">Trip mode</p>
-            <p className="text-[12.5px] text-text-secondary mt-0.5 mb-2.5">
-              Preparation for planning, Shopping to run the checklist
-            </p>
-            <div className="flex gap-2">
-              <Pill
-                active={settings.trip_mode === 'preparation'}
-                onClick={() => setTripMode('preparation')}
-                className="flex-1"
-              >
-                Preparation
-              </Pill>
-              <Pill
-                active={settings.trip_mode === 'shopping'}
-                onClick={() => setTripMode('shopping')}
-                className="flex-1"
-              >
-                Shopping
-              </Pill>
-            </div>
-          </div>
+          <Row
+            label="Sound effects"
+            hint="The short tick when you mark an item bought"
+          >
+            <Switch
+              checked={!settings.muted}
+              onChange={toggleMute}
+              label="Sound effects"
+            />
+          </Row>
 
           <div className="px-4 py-3.5">
             <p className="text-[15px] font-medium">Total budget (₹)</p>

@@ -2,7 +2,14 @@ import { useMemo } from 'react'
 import { useStore } from '../store/useStore.js'
 import TopBar from '../components/TopBar.jsx'
 import { Card, Button, cx } from '../components/ui.jsx'
-import { SwapIcon, PlusIcon, TrashIcon } from '../components/Icons.jsx'
+import { PlusIcon, TrashIcon } from '../components/Icons.jsx'
+
+/** keep only digits and a single decimal point */
+function sanitizeAmount(raw) {
+  const cleaned = raw.replace(/[^0-9.]/g, '')
+  const parts = cleaned.split('.')
+  return parts.length > 2 ? `${parts[0]}.${parts.slice(1).join('')}` : cleaned
+}
 
 export default function Currency() {
   const currency = useStore((s) => s.currency)
@@ -74,20 +81,24 @@ export default function Currency() {
 
         {/* amount */}
         <Card className="p-4">
-          <label className="block text-[13px] font-medium text-text-secondary mb-2">
+          <label
+            htmlFor="currency-amount"
+            className="block text-[13px] font-medium text-text-secondary mb-2"
+          >
             Amount in {fromName}
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-[26px] font-bold text-text-secondary w-7 text-center">
+          <div className="flex items-center gap-2 rounded-[10px] bg-surface-2 border border-border px-3 focus-within:border-accent transition">
+            <span className="text-[22px] font-bold text-text-secondary w-6 text-center shrink-0">
               {fromSym}
             </span>
             <input
-              type="number"
+              id="currency-amount"
+              type="text"
               inputMode="decimal"
               value={currency.amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => setAmount(sanitizeAmount(e.target.value))}
               placeholder="0"
-              className="flex-1 min-w-0 bg-transparent text-[28px] font-bold outline-none placeholder:text-text-secondary/40"
+              className="flex-1 min-w-0 min-h-[52px] bg-transparent text-[26px] font-bold outline-none placeholder:text-text-secondary/40"
             />
           </div>
         </Card>
@@ -139,12 +150,14 @@ export default function Currency() {
                   <div className="flex items-center gap-1.5">
                     <span className="text-[12px] text-text-secondary">1 {fromName} =</span>
                     <input
-                      type="number"
+                      type="text"
                       inputMode="decimal"
                       value={r.value}
-                      onChange={(e) => updateRate(r.id, { value: e.target.value })}
+                      onChange={(e) =>
+                        updateRate(r.id, { value: sanitizeAmount(e.target.value) })
+                      }
                       placeholder="0.00"
-                      className="w-20 min-h-[40px] px-2 rounded-[8px] bg-surface-2 border border-border text-[14px] font-semibold outline-none focus:border-accent"
+                      className="w-20 min-h-[44px] px-2 rounded-[8px] bg-surface-2 border border-border text-[14px] font-semibold outline-none focus:border-accent"
                     />
                     <span className="text-[12px] text-text-secondary">{toName}</span>
                   </div>

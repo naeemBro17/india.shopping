@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react'
 import { useStore, PRIORITY_ORDER } from '../store/useStore.js'
 import { useToast } from '../hooks/useToast.js'
 import TopBar from '../components/TopBar.jsx'
-import ProductCard from '../components/ProductCard.jsx'
+import ProductRow from '../components/ProductRow.jsx'
 import ProductSheet from '../components/ProductSheet.jsx'
+import { markBoughtWithFeedback } from '../lib/feedback.js'
 import { EmptyState } from '../components/ui.jsx'
 import { PlusIcon, SearchIcon, BagIcon } from '../components/Icons.jsx'
 
@@ -114,13 +115,13 @@ export default function Products() {
           />
         ) : (
           filtered.map((p) => (
-            <ProductCard
+            <ProductRow
               key={p.id}
               product={p}
               stores={stores}
               onOpen={(prod) => setSheet(prod)}
               onToggle={(prod) => {
-                toggleBought(prod.id)
+                markBoughtWithFeedback(prod, toggleBought)
                 toast(prod.is_bought ? 'Marked as not bought' : 'Marked as bought', {
                   tone: prod.is_bought ? 'default' : 'success',
                 })

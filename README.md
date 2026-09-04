@@ -29,9 +29,11 @@ npm run preview    # serve the production build
 
 ```
 src/
-  components/   reusable UI (BottomSheet, ProductCard, forms, nav, icons, ui primitives)
+  components/   reusable UI — one shared component per data type
+                (ProductRow, StatCard, StoreRow, BottomSheet, forms, nav, icons, ui primitives)
   screens/      one file per route
   store/        Zustand store + localStorage persistence + selectors
+  lib/          feedback.js — shared bought interaction (haptic + Web Audio tick)
   hooks/        useOnlineStatus, useToast
 ```
 

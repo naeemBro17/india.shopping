@@ -67,6 +67,10 @@ export default {
           '60%': { transform: 'scale(1.15)', opacity: '1' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        'check-in': {
+          '0%': { transform: 'scale(0.5)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
         shimmer: {
           '0%': { backgroundPosition: '-400px 0' },
           '100%': { backgroundPosition: '400px 0' },
@@ -79,6 +83,7 @@ export default {
         'fade-in-up': 'fade-in-up 300ms ease',
         'scale-pop': 'scale-pop 300ms ease',
         'check-pop': 'check-pop 300ms ease',
+        'check-in': 'check-in 200ms ease-out',
         shimmer: 'shimmer 1.4s linear infinite',
       },
     },

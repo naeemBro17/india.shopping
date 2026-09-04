@@ -18,6 +18,7 @@ const DEFAULT_SETTINGS = {
   trip_mode: 'preparation',
   total_budget: 0,
   dark_mode: false,
+  muted: false,
 }
 
 const DEFAULT_CURRENCY = {
@@ -41,7 +42,9 @@ function newProduct(data = {}) {
     notes: (data.notes || '').trim(),
     is_bought: false,
     bought_quantity: 0,
-    store_ids: Array.isArray(data.store_ids) ? data.store_ids : [],
+    store_ids: Array.isArray(data.store_ids)
+      ? [...new Set(data.store_ids.filter(Boolean))]
+      : [],
     created_at: Date.now(),
   }
 }
@@ -77,6 +80,9 @@ export const useStore = create(
                     patch.actual_price != null
                       ? Number(patch.actual_price) || 0
                       : p.actual_price,
+                  store_ids: Array.isArray(patch.store_ids)
+                    ? [...new Set(patch.store_ids.filter(Boolean))]
+                    : p.store_ids || [],
                 }
               : p
           ),
@@ -152,6 +158,11 @@ export const useStore = create(
       toggleDarkMode: () =>
         set((s) => ({
           settings: { ...s.settings, dark_mode: !s.settings.dark_mode },
+        })),
+
+      toggleMute: () =>
+        set((s) => ({
+          settings: { ...s.settings, muted: !s.settings.muted },
         })),
 
       /* ---------- currency ---------- */
@@ -235,14 +246,14 @@ export const useStore = create(
 /* ---------- selectors / helpers ---------- */
 
 export function storeItemStats(products, storeId) {
-  const items = products.filter((p) => p.store_ids.includes(storeId))
+  const items = products.filter((p) => (p.store_ids || []).includes(storeId))
   const bought = items.filter((p) => p.is_bought).length
   return { total: items.length, bought, remaining: items.length - bought, items }
 }
 
 export function activeStoreIds(products) {
   const set = new Set()
-  products.forEach((p) => p.store_ids.forEach((id) => set.add(id)))
+  products.forEach((p) => (p.store_ids || []).forEach((id) => set.add(id)))
   return set
 }
 

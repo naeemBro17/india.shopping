@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useStore, storeItemStats } from '../store/useStore.js'
 import TopBar from '../components/TopBar.jsx'
 import StoreSheet from '../components/StoreSheet.jsx'
-import { Card, ProgressBar, EmptyState } from '../components/ui.jsx'
-import { PlusIcon, ChevronRight, StoreIcon } from '../components/Icons.jsx'
+import StoreRow from '../components/StoreRow.jsx'
+import { Card, EmptyState } from '../components/ui.jsx'
+import { PlusIcon, StoreIcon } from '../components/Icons.jsx'
 
 export default function Stores() {
   const navigate = useNavigate()
@@ -68,36 +69,17 @@ function StoreSection({ title, rows, onOpen }) {
       <h2 className="text-[13px] font-semibold text-text-secondary uppercase tracking-wide mb-2 px-1">
         {title}
       </h2>
-      <div className="space-y-2.5">
-        {rows.map(({ store, total, bought, remaining }) => (
-          <Card key={store.id} className="overflow-hidden">
-            <button
-              onClick={() => onOpen(store.id)}
-              className="w-full text-left px-4 py-3.5 active:bg-surface-2 transition"
-            >
-              <div className="flex items-center gap-2">
-                <span className="flex-1 min-w-0">
-                  <span className="block text-[15.5px] font-semibold truncate">{store.name}</span>
-                  {store.location && (
-                    <span className="block text-[12.5px] text-text-secondary truncate">
-                      {store.location}
-                    </span>
-                  )}
-                </span>
-                <ChevronRight size={18} className="text-text-secondary shrink-0" />
-              </div>
-              <p className="text-[12.5px] text-text-secondary mt-2 mb-1.5">
-                {total === 0
-                  ? 'No items assigned'
-                  : remaining === 0
-                  ? `All ${total} items bought`
-                  : `${remaining} item${remaining === 1 ? '' : 's'} remaining`}
-              </p>
-              {total > 0 && <ProgressBar value={bought} total={total} />}
-            </button>
-          </Card>
+      <Card className="divide-y divide-border overflow-hidden">
+        {rows.map(({ store, total, remaining }) => (
+          <StoreRow
+            key={store.id}
+            store={store}
+            total={total}
+            remaining={remaining}
+            onClick={() => onOpen(store.id)}
+          />
         ))}
-      </div>
+      </Card>
     </section>
   )
 }
