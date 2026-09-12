@@ -6,7 +6,7 @@ const uid = () =>
     ? crypto.randomUUID()
     : 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36)
 
-const DEFAULT_STORES = [
+export const DEFAULT_STORES = [
   { id: 'store-amazon-india', name: 'Amazon India', type: 'online', location: '', website_url: 'https://www.amazon.in' },
   { id: 'store-nykaa', name: 'Nykaa', type: 'online', location: '', website_url: 'https://www.nykaa.com' },
   { id: 'store-sephora', name: 'Sephora', type: 'physical', location: '', website_url: '' },
@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS = {
   total_budget: 0,
   dark_mode: false,
   muted: false,
+  accent_theme: 'blue', // 'blue' | 'violet' | 'orange'
 }
 
 const DEFAULT_CURRENCY = {
@@ -60,6 +61,17 @@ export const useStore = create(
       /* ---------- products ---------- */
       addProduct: (data) =>
         set((s) => ({ products: [newProduct(data), ...s.products] })),
+
+      /** Bulk import — array of { name, notes }. Priority defaults to must_buy. */
+      addProducts: (items) =>
+        set((s) => ({
+          products: [
+            ...items.map((it) =>
+              newProduct({ name: it.name, notes: it.notes, priority: 'must_buy' })
+            ),
+            ...s.products,
+          ],
+        })),
 
       updateProduct: (id, patch) =>
         set((s) => ({
@@ -164,6 +176,9 @@ export const useStore = create(
         set((s) => ({
           settings: { ...s.settings, muted: !s.settings.muted },
         })),
+
+      setAccentTheme: (accent_theme) =>
+        set((s) => ({ settings: { ...s.settings, accent_theme } })),
 
       /* ---------- currency ---------- */
       setDirection: (direction) =>

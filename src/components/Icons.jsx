@@ -138,6 +138,13 @@ export const WifiOffIcon = (p) => (
   </Svg>
 )
 
+export const ImportIcon = (p) => (
+  <Svg {...p}>
+    <path d="M12 3v10m0 0 3.5-3.5M12 13 8.5 9.5" />
+    <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+  </Svg>
+)
+
 export const SparkIcon = (p) => (
   <Svg {...p}>
     <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />

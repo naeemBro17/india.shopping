@@ -11,7 +11,7 @@ export const Button = forwardRef(function Button(
 ) {
   const variants = {
     primary:
-      'bg-accent text-white border border-transparent active:opacity-90',
+      'bg-accent text-accent-text border border-transparent active:opacity-90',
     secondary:
       'bg-surface text-text-primary border border-border active:bg-surface-2',
     ghost:

@@ -5,9 +5,17 @@ import TopBar from '../components/TopBar.jsx'
 import ProductRow from '../components/ProductRow.jsx'
 import ProductSheet from '../components/ProductSheet.jsx'
 import QuickAdd from '../components/QuickAdd.jsx'
+import BulkImport from '../components/BulkImport.jsx'
 import { markBoughtWithFeedback } from '../lib/feedback.js'
 import { cx } from '../components/ui.jsx'
-import { PlusIcon, SearchIcon, CloseIcon, ChevronRight, BagIcon } from '../components/Icons.jsx'
+import {
+  PlusIcon,
+  SearchIcon,
+  CloseIcon,
+  ChevronRight,
+  BagIcon,
+  ImportIcon,
+} from '../components/Icons.jsx'
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -23,6 +31,7 @@ export default function Products() {
 
   const [params, setParams] = useSearchParams()
   const [adding, setAdding] = useState(params.get('add') === '1')
+  const [bulkOpen, setBulkOpen] = useState(false)
   const [searching, setSearching] = useState(false)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
@@ -87,6 +96,13 @@ export default function Products() {
               <SearchIcon size={20} />
             </button>
             <button
+              onClick={() => setBulkOpen(true)}
+              aria-label="Bulk import"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-text-primary active:bg-surface-2"
+            >
+              <ImportIcon size={20} />
+            </button>
+            <button
               onClick={() => setAdding((v) => !v)}
               aria-label="Add product"
               className="w-11 h-11 rounded-full flex items-center justify-center text-text-primary active:bg-surface-2"
@@ -96,6 +112,8 @@ export default function Products() {
           </>
         }
       />
+
+      <BulkImport open={bulkOpen} onClose={() => setBulkOpen(false)} />
 
       {searching && (
         <div className="px-4 pt-3 animate-fade-in-up">

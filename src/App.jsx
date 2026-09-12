@@ -14,18 +14,23 @@ import ShoppingStore from './screens/ShoppingStore.jsx'
 import Currency from './screens/Currency.jsx'
 import Settings from './screens/Settings.jsx'
 
-function useDarkModeSync() {
+const ACCENT_CLASSES = ['theme-blue', 'theme-violet', 'theme-orange']
+
+function useThemeSync() {
   const dark = useStore((s) => s.settings.dark_mode)
+  const accentTheme = useStore((s) => s.settings.accent_theme)
   useEffect(() => {
     const root = document.documentElement
     root.classList.toggle('dark', !!dark)
+    root.classList.remove(...ACCENT_CLASSES)
+    root.classList.add(`theme-${accentTheme || 'blue'}`)
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', dark ? '#0b0b0c' : '#ffffff')
-  }, [dark])
+    if (meta) meta.setAttribute('content', dark ? '#0f0f1a' : '#ffffff')
+  }, [dark, accentTheme])
 }
 
 export default function App() {
-  useDarkModeSync()
+  useThemeSync()
 
   return (
     <div className="min-h-full bg-bg text-text-primary">

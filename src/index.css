@@ -3,29 +3,46 @@
 @tailwind utilities;
 
 :root {
+  /* light mode base tokens */
   --bg: #ffffff;
   --surface: #ffffff;
   --surface-2: #f4f4f5;
   --text-primary: #18181b;
   --text-secondary: #71717a;
+  --text-muted: #a1a1aa;
   --border: rgba(0, 0, 0, 0.09);
-  --accent: #4f46e5;
   --accent-warm: #c2410c;
   --success: #16a34a;
   --warning: #d97706;
 }
 
 .dark {
-  --bg: #0b0b0c;
-  --surface: #131315;
-  --surface-2: #1d1d20;
-  --text-primary: #f4f4f5;
-  --text-secondary: #a1a1aa;
-  --border: rgba(255, 255, 255, 0.1);
-  --accent: #818cf8;
+  /* dark "mission" base tokens */
+  --bg: #0f0f1a;
+  --surface: #1a1a2e;
+  --surface-2: #232338;
+  --text-primary: #f0f0f5;
+  --text-secondary: #8a8a9e;
+  --text-muted: #5a5a72;
+  --border: rgba(255, 255, 255, 0.08);
   --accent-warm: #fb923c;
   --success: #22c55e;
   --warning: #f59e0b;
+}
+
+/* ---------- accent theme (selectable, independent of light/dark) ---------- */
+:root,
+.theme-blue {
+  --accent: #3b82f6;
+  --accent-text: #0b1220;
+}
+.theme-violet {
+  --accent: #8b5cf6;
+  --accent-text: #140f2b;
+}
+.theme-orange {
+  --accent: #f97316;
+  --accent-text: #1f1206;
 }
 
 * {

@@ -14,9 +14,11 @@ import Checkbox from './Checkbox.jsx'
  * Priority is a subtle coloured dot, never a pill.
  */
 
+// Priority shown as a subtle coloured dot — never a big pill.
 const DOT = {
-  must_buy: 'bg-[var(--accent-warm)]',
-  if_available: 'bg-[var(--accent)]',
+  must_buy: 'bg-accent',
+  normal: 'bg-text-muted',
+  if_available: 'bg-text-secondary',
 }
 
 export default function ProductRow({
