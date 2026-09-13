@@ -12,23 +12,26 @@ export default function StatCard({ label, value, progress }) {
     progress && progress.total > 0
       ? Math.max(0, Math.min(100, Math.round((progress.value / progress.total) * 100)))
       : null
+  // A 0% bar would render as a flat grey track — nudge it to a small
+  // visible sliver so it never looks like a rendering failure.
+  const barWidth = pct === 0 ? '6px' : pct != null ? `${pct}%` : undefined
 
   return (
-    <div className="bg-surface border border-border rounded-card p-3.5">
+    <div className="bg-surface border border-border rounded-card px-3 py-2">
       <p
         className={cx(
           'font-bold leading-none tabular-nums',
-          long ? 'text-[19px]' : 'text-[24px]'
+          long ? 'text-[18px]' : 'text-[24px]'
         )}
       >
         {value}
       </p>
-      <p className="text-[12px] text-text-secondary mt-1.5">{label}</p>
+      <p className="text-[11px] leading-none text-text-secondary mt-1.5 truncate">{label}</p>
       {pct != null && (
-        <div className="h-1 rounded-full bg-surface-2 overflow-hidden mt-2.5">
+        <div className="h-[3px] rounded-full bg-surface-2 overflow-hidden mt-2">
           <div
             className="h-full rounded-full bg-accent transition-all duration-300"
-            style={{ width: `${pct}%` }}
+            style={{ width: barWidth }}
           />
         </div>
       )}

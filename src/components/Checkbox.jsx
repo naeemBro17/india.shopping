@@ -28,7 +28,7 @@ export default function Checkbox({ checked, onToggle, size = 'md', ariaLabel }) 
         lg ? 'w-8 h-8' : 'w-[26px] h-[26px]',
         checked
           ? 'bg-accent border-accent text-accent-text animate-scale-pop'
-          : 'bg-transparent border-text-muted text-transparent active:bg-surface-2'
+          : 'bg-transparent border-border-strong text-transparent active:bg-surface-2'
       )}
     >
       {checked && (

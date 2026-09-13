@@ -13,6 +13,7 @@ import TravelExpenseRow from '../components/TravelExpenseRow.jsx'
 import TravelExpenseSheet from '../components/TravelExpenseSheet.jsx'
 import TravelSettingsSheet from '../components/TravelSettingsSheet.jsx'
 import ConvertMoneySheet from '../components/ConvertMoneySheet.jsx'
+import FAB from '../components/FAB.jsx'
 import { Card, Button, ProgressBar, EmptyState, formatBDT, formatINR } from '../components/ui.jsx'
 import { SettingsIcon, DownloadIcon, PlaneIcon, SwapIcon } from '../components/Icons.jsx'
 
@@ -261,6 +262,8 @@ export default function Travel() {
           toast(`Converted at ৳1 = ₹${rate}`, { tone: 'success' })
         }}
       />
+
+      <FAB label="Add expense" onClick={() => setSheetState('add')} />
     </div>
   )
 }

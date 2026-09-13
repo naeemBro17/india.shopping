@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS = {
   total_budget: 0,
   dark_mode: false,
   muted: false,
-  accent_theme: 'blue', // 'blue' | 'violet' | 'orange'
+  accent_theme: 'slate', // 'slate' | 'sage' | 'rosewood'
 }
 
 const DEFAULT_CURRENCY = {
@@ -363,7 +363,7 @@ export const useStore = create(
     }),
     {
       name: 'india-shopping-mission',
-      version: 1,
+      version: 2,
       partialize: (s) => ({
         products: s.products,
         stores: s.stores,
@@ -372,6 +372,16 @@ export const useStore = create(
         travel_expenses: s.travel_expenses,
         travel_settings: s.travel_settings,
       }),
+      // v1 -> v2: the old accent-only themes (blue/violet/orange) were
+      // replaced by full palettes (slate/sage/rosewood) in Part C.
+      migrate: (persisted, version) => {
+        if (version < 2 && persisted?.settings) {
+          const LEGACY = { blue: 'slate', violet: 'sage', orange: 'rosewood' }
+          const legacy = LEGACY[persisted.settings.accent_theme]
+          if (legacy) persisted.settings.accent_theme = legacy
+        }
+        return persisted
+      },
     }
   )
 )

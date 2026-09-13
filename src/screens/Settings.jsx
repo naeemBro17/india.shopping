@@ -10,9 +10,9 @@ import { TrashIcon, ReceiptIcon, ChevronRight } from '../components/Icons.jsx'
 const APP_VERSION = '1.0.0'
 
 const ACCENT_THEMES = [
-  { key: 'blue', label: 'Blue', color: '#3b82f6' },
-  { key: 'violet', label: 'Violet', color: '#8b5cf6' },
-  { key: 'orange', label: 'Orange', color: '#f97316' },
+  { key: 'slate', label: 'Slate', color: '#6b8ca8' },
+  { key: 'sage', label: 'Sage', color: '#7ba694' },
+  { key: 'rosewood', label: 'Rosewood', color: '#a8626d' },
 ]
 
 export default function Settings() {
@@ -166,7 +166,7 @@ export default function Settings() {
           </p>
           <div className="flex gap-2">
             {ACCENT_THEMES.map((t) => {
-              const active = (settings.accent_theme || 'blue') === t.key
+              const active = (settings.accent_theme || 'slate') === t.key
               return (
                 <button
                   key={t.key}

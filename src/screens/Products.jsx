@@ -6,10 +6,10 @@ import ProductRow from '../components/ProductRow.jsx'
 import ProductSheet from '../components/ProductSheet.jsx'
 import QuickAdd from '../components/QuickAdd.jsx'
 import BulkImport from '../components/BulkImport.jsx'
+import FAB from '../components/FAB.jsx'
 import { markBoughtWithFeedback } from '../lib/feedback.js'
 import { cx } from '../components/ui.jsx'
 import {
-  PlusIcon,
   SearchIcon,
   CloseIcon,
   ChevronRight,
@@ -101,13 +101,6 @@ export default function Products() {
               className="w-11 h-11 rounded-full flex items-center justify-center text-text-primary active:bg-surface-2"
             >
               <ImportIcon size={20} />
-            </button>
-            <button
-              onClick={() => setAdding((v) => !v)}
-              aria-label="Add product"
-              className="w-11 h-11 rounded-full flex items-center justify-center text-text-primary active:bg-surface-2"
-            >
-              <PlusIcon size={22} />
             </button>
           </>
         }
@@ -228,6 +221,8 @@ export default function Products() {
       </div>
 
       <ProductSheet state={editing} onClose={() => setEditing(null)} />
+
+      <FAB label="Add product" onClick={() => setAdding((v) => !v)} />
     </div>
   )
 }

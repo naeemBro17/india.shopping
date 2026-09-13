@@ -16,18 +16,28 @@ import Currency from './screens/Currency.jsx'
 import Settings from './screens/Settings.jsx'
 import Receipt from './screens/Receipt.jsx'
 
-const ACCENT_CLASSES = ['theme-blue', 'theme-violet', 'theme-orange']
+const ACCENT_CLASSES = ['theme-slate', 'theme-sage', 'theme-rosewood']
+
+// Mirrors the --bg token of each palette (index.css) so the browser chrome
+// (status bar / task switcher) matches instantly, without waiting on layout.
+const THEME_BG = {
+  slate: { light: '#f6f7f9', dark: '#16181c' },
+  sage: { light: '#f5f8f6', dark: '#15191a' },
+  rosewood: { light: '#faf6f6', dark: '#181314' },
+}
 
 function useThemeSync() {
   const dark = useStore((s) => s.settings.dark_mode)
   const accentTheme = useStore((s) => s.settings.accent_theme)
   useEffect(() => {
+    const theme = accentTheme || 'slate'
     const root = document.documentElement
     root.classList.toggle('dark', !!dark)
     root.classList.remove(...ACCENT_CLASSES)
-    root.classList.add(`theme-${accentTheme || 'blue'}`)
+    root.classList.add(`theme-${theme}`)
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', dark ? '#0f0f1a' : '#ffffff')
+    const bg = THEME_BG[theme] || THEME_BG.slate
+    if (meta) meta.setAttribute('content', dark ? bg.dark : bg.light)
   }, [dark, accentTheme])
 }
 

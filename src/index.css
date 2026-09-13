@@ -3,46 +3,106 @@
 @tailwind utilities;
 
 :root {
-  /* light mode base tokens */
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f4f4f5;
-  --text-primary: #18181b;
-  --text-secondary: #71717a;
-  --text-muted: #a1a1aa;
-  --border: rgba(0, 0, 0, 0.09);
+  /* semantic tokens — shared across all three palettes, light mode */
   --accent-warm: #c2410c;
   --success: #16a34a;
   --warning: #d97706;
 }
 
 .dark {
-  /* dark "mission" base tokens */
-  --bg: #0f0f1a;
-  --surface: #1a1a2e;
-  --surface-2: #232338;
-  --text-primary: #f0f0f5;
-  --text-secondary: #8a8a9e;
-  --text-muted: #5a5a72;
-  --border: rgba(255, 255, 255, 0.08);
+  /* semantic tokens — shared across all three palettes, dark mode */
   --accent-warm: #fb923c;
   --success: #22c55e;
   --warning: #f59e0b;
 }
 
-/* ---------- accent theme (selectable, independent of light/dark) ---------- */
+/*
+ * ---------- full palettes ----------
+ * Each theme owns its background, surfaces, text, borders AND accent —
+ * selecting a theme changes the whole app's identity, not just one colour.
+ * Low-saturation and low-contrast on purpose; don't brighten these.
+ *
+ * `--surface` is a clear tonal step above `--bg` in dark mode so cards read
+ * as sitting above the background by tone alone, not just their border.
+ */
+
+/* Slate — neutral grey-blue (default) */
 :root,
-.theme-blue {
-  --accent: #3b82f6;
-  --accent-text: #0b1220;
+.theme-slate {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #ececef;
+  --text-primary: #16181c;
+  --text-secondary: #5f6670;
+  --text-muted: #9298a0;
+  --border: rgba(22, 24, 28, 0.1);
+  --border-strong: rgba(22, 24, 28, 0.2);
+  --accent: #6b8ca8;
+  --accent-text: #16181c;
 }
-.theme-violet {
-  --accent: #8b5cf6;
-  --accent-text: #140f2b;
+.theme-slate.dark {
+  --bg: #16181c;
+  --surface: #1e2126;
+  --surface-2: #2b2f36;
+  --text-primary: #dde1e6;
+  --text-secondary: #8b949e;
+  --text-muted: #6e767f;
+  --border: #262a30;
+  --border-strong: #3a3f47;
+  --accent: #6b8ca8;
+  --accent-text: #16181c;
 }
-.theme-orange {
-  --accent: #f97316;
-  --accent-text: #1f1206;
+
+/* Sage — soft muted green */
+.theme-sage {
+  --bg: #f5f8f6;
+  --surface: #ffffff;
+  --surface-2: #eaf0ec;
+  --text-primary: #15191a;
+  --text-secondary: #5c6b64;
+  --text-muted: #8fa198;
+  --border: rgba(21, 25, 22, 0.1);
+  --border-strong: rgba(21, 25, 22, 0.2);
+  --accent: #7ba694;
+  --accent-text: #15191a;
+}
+.theme-sage.dark {
+  --bg: #15191a;
+  --surface: #1d2322;
+  --surface-2: #2a3230;
+  --text-primary: #dde4e1;
+  --text-secondary: #8b9c96;
+  --text-muted: #6d7d78;
+  --border: #252c2c;
+  --border-strong: #394542;
+  --accent: #7ba694;
+  --accent-text: #15191a;
+}
+
+/* Rosewood — deep dusty red */
+.theme-rosewood {
+  --bg: #faf6f6;
+  --surface: #ffffff;
+  --surface-2: #f1e7e8;
+  --text-primary: #181314;
+  --text-secondary: #7d6468;
+  --text-muted: #ab9599;
+  --border: rgba(24, 19, 20, 0.1);
+  --border-strong: rgba(24, 19, 20, 0.2);
+  --accent: #a8626d;
+  --accent-text: #181314;
+}
+.theme-rosewood.dark {
+  --bg: #181314;
+  --surface: #221b1d;
+  --surface-2: #312528;
+  --text-primary: #e7dcde;
+  --text-secondary: #a08890;
+  --text-muted: #7d6a6e;
+  --border: #2b2124;
+  --border-strong: #423338;
+  --accent: #a8626d;
+  --accent-text: #181314;
 }
 
 * {

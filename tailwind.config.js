@@ -18,6 +18,7 @@ export default {
         'text-secondary': 'var(--text-secondary)',
         'text-muted': 'var(--text-muted)',
         border: 'var(--border)',
+        'border-strong': 'var(--border-strong)',
         accent: 'var(--accent)',
         'accent-text': 'var(--accent-text)',
         'accent-warm': 'var(--accent-warm)',

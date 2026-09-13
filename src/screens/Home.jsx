@@ -4,6 +4,7 @@ import { useStore, storeItemStats, activeStoreIds } from '../store/useStore.js'
 import TopBar from '../components/TopBar.jsx'
 import StatCard from '../components/StatCard.jsx'
 import StoreRow from '../components/StoreRow.jsx'
+import FAB from '../components/FAB.jsx'
 import { Button, Card, ProgressBar, formatINR } from '../components/ui.jsx'
 import { PlusIcon, SettingsIcon } from '../components/Icons.jsx'
 
@@ -141,6 +142,8 @@ export default function Home() {
           </section>
         )}
       </div>
+
+      <FAB label="Add product" onClick={() => navigate('/products?add=1')} />
     </div>
   )
 }
