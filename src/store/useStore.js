@@ -115,12 +115,17 @@ export const useStore = create(
       addProduct: (data) =>
         set((s) => ({ products: [newProduct(data), ...s.products] })),
 
-      /** Bulk import — array of { name, notes }. Priority defaults to must_buy. */
+      /** Bulk import — array of { name, notes, estimated_price }. Priority defaults to must_buy. */
       addProducts: (items) =>
         set((s) => ({
           products: [
             ...items.map((it) =>
-              newProduct({ name: it.name, notes: it.notes, priority: 'must_buy' })
+              newProduct({
+                name: it.name,
+                notes: it.notes,
+                estimated_price: it.estimated_price,
+                priority: 'must_buy',
+              })
             ),
             ...s.products,
           ],

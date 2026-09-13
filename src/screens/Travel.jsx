@@ -6,7 +6,7 @@ import {
   travelIsToday,
 } from '../store/useStore.js'
 import { useToast } from '../hooks/useToast.js'
-import { buildAndDownloadDocument } from '../lib/exportDoc.js'
+import { buildAndDownloadDocument, pdfMoney } from '../lib/exportDoc.js'
 import TopBar from '../components/TopBar.jsx'
 import TravelQuickAdd from '../components/TravelQuickAdd.jsx'
 import TravelExpenseRow from '../components/TravelExpenseRow.jsx'
@@ -15,7 +15,7 @@ import TravelSettingsSheet from '../components/TravelSettingsSheet.jsx'
 import ConvertMoneySheet from '../components/ConvertMoneySheet.jsx'
 import FAB from '../components/FAB.jsx'
 import { Card, Button, ProgressBar, EmptyState, formatBDT, formatINR } from '../components/ui.jsx'
-import { SettingsIcon, DownloadIcon, PlaneIcon, SwapIcon } from '../components/Icons.jsx'
+import { SettingsIcon, DownloadIcon, PlaneIcon, SwapIcon, EditIcon } from '../components/Icons.jsx'
 
 export default function Travel() {
   const expenses = useStore((s) => s.travel_expenses)
@@ -89,31 +89,31 @@ export default function Travel() {
 
     const sections = [
       {
-        heading: 'India (₹ INR)',
+        heading: 'India (INR)',
         table:
           inr.length > 0
             ? {
                 columns,
-                rows: inr.map((e) => [rowDate(e.created_at), e.category, e.note || '—', formatINR(e.amount)]),
+                rows: inr.map((e) => [rowDate(e.created_at), e.category, e.note || '—', pdfMoney(e.amount, 'INR')]),
               }
             : undefined,
         lines: [
-          ...subtotalsByCategory(inr).map(([cat, amt]) => `${cat}: ${formatINR(amt)}`),
-          `India subtotal: ${formatINR(inrTotal)}`,
+          ...subtotalsByCategory(inr).map(([cat, amt]) => `${cat}: ${pdfMoney(amt, 'INR')}`),
+          `India subtotal: ${pdfMoney(inrTotal, 'INR')}`,
         ],
       },
       {
-        heading: 'Bangladesh (৳ BDT)',
+        heading: 'Bangladesh (BDT)',
         table:
           bdt.length > 0
             ? {
                 columns,
-                rows: bdt.map((e) => [rowDate(e.created_at), e.category, e.note || '—', formatBDT(e.amount)]),
+                rows: bdt.map((e) => [rowDate(e.created_at), e.category, e.note || '—', pdfMoney(e.amount, 'BDT')]),
               }
             : undefined,
         lines: [
-          ...subtotalsByCategory(bdt).map(([cat, amt]) => `${cat}: ${formatBDT(amt)}`),
-          `Bangladesh subtotal: ${formatBDT(bdtTotal)}`,
+          ...subtotalsByCategory(bdt).map(([cat, amt]) => `${cat}: ${pdfMoney(amt, 'BDT')}`),
+          `Bangladesh subtotal: ${pdfMoney(bdtTotal, 'BDT')}`,
         ],
       },
     ]
@@ -123,11 +123,12 @@ export default function Travel() {
       title: `Travel Expenses — ${dateLabel}`,
       sections,
       totals: [
-        { label: `Total in India: ${formatINR(inrTotal)}` },
-        { label: `Total in Bangladesh: ${formatBDT(bdtTotal)}` },
-        { label: `FINAL EXPENSE: ${formatBDT(finalExpense)}`, emphasize: true },
+        { label: `Total in India: ${pdfMoney(inrTotal, 'INR')}` },
+        { label: `Total in Bangladesh: ${pdfMoney(bdtTotal, 'BDT')}` },
+        { label: `FINAL EXPENSE: ${pdfMoney(finalExpense, 'BDT')}`, emphasize: true },
       ],
-      note: rate ? `Converted at ৳1 = ₹${rate}` : undefined,
+      note: rate ? `Converted at Tk. 1 = Rs. ${rate}` : undefined,
+      footer: `Shopping Mission - generated ${dateLabel}`,
     })
     toast('Travel report downloaded', { tone: 'success' })
   }
@@ -161,9 +162,19 @@ export default function Travel() {
           />
         ) : (
           <Card className="p-4">
-            <p className="text-[13px] font-semibold uppercase tracking-wide text-text-secondary">
-              Trip budget
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] font-semibold uppercase tracking-wide text-text-secondary">
+                Trip budget
+              </p>
+              <button
+                type="button"
+                onClick={() => setSettingsOpen(true)}
+                aria-label="Edit trip budget"
+                className="w-8 h-8 -mr-1.5 -mt-1 rounded-full flex items-center justify-center text-text-secondary active:bg-surface-2 transition"
+              >
+                <EditIcon size={15} />
+              </button>
+            </div>
             <p className="text-[30px] font-bold tabular-nums mt-1 leading-none">
               {fmt(totals.remaining)}
             </p>

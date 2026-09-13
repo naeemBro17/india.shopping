@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore, storeItemStats } from '../store/useStore.js'
 import { useToast } from '../hooks/useToast.js'
 import TopBar from '../components/TopBar.jsx'
 import StoreRow from '../components/StoreRow.jsx'
+import StartShoppingTransition from '../components/StartShoppingTransition.jsx'
 import { Card, Button, ProgressBar } from '../components/ui.jsx'
 import { CartIcon, CheckIcon, ReceiptIcon } from '../components/Icons.jsx'
 
@@ -14,6 +15,7 @@ export default function Shopping() {
   const settings = useStore((s) => s.settings)
   const setTripMode = useStore((s) => s.setTripMode)
   const toast = useToast((s) => s.toast)
+  const [transitioning, setTransitioning] = useState(false)
 
   const active = settings.trip_mode === 'shopping'
 
@@ -33,8 +35,16 @@ export default function Shopping() {
     }
   }, [products])
 
-  /* ---------- preparation: one calm prompt, one button ---------- */
+  /* ---------- shopping: store selector ---------- */
+  const tripComplete = audit.totalItems > 0 && audit.boughtItems === audit.totalItems
+
+  function startShopping() {
+    setTripMode('shopping')
+    setTransitioning(true)
+  }
+
   if (!active) {
+    /* ---------- preparation: one calm prompt, one button ---------- */
     return (
       <div>
         <TopBar title="Shopping" />
@@ -49,10 +59,7 @@ export default function Shopping() {
           <Button
             variant="primary"
             className="mt-6 w-full max-w-[280px]"
-            onClick={() => {
-              setTripMode('shopping')
-              toast('Shopping mode on', { tone: 'success' })
-            }}
+            onClick={startShopping}
           >
             <CartIcon size={18} />
             Start Shopping
@@ -62,12 +69,17 @@ export default function Shopping() {
     )
   }
 
-  /* ---------- shopping: store selector ---------- */
-  const tripComplete = audit.totalItems > 0 && audit.boughtItems === audit.totalItems
-
   return (
     <div>
       <TopBar title="Shopping" subtitle="Shopping mode active" />
+
+      {transitioning && (
+        <StartShoppingTransition
+          itemCount={audit.totalItems}
+          storeCount={rows.length}
+          onDone={() => setTransitioning(false)}
+        />
+      )}
 
       <div className="px-4 pt-4 pb-6 space-y-5">
         <div>

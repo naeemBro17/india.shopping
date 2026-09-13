@@ -13,6 +13,14 @@
  * The defining signal of a real product line is a **bold** span immediately
  * after the leading number — that's the primary filter, not just "starts
  * with a number". Supports both English and Bengali numerals/punctuation.
+ *
+ * Also detects an optional estimated price on the line, e.g.:
+ *   ...anti-aging. | 450
+ *   ...pigmentation. | ₹380
+ *   ...fever and pain. | Rs 35
+ * A bare number is NEVER read as a price on its own (product names contain
+ * numbers, e.g. "Dolo 650") — it only counts when marked by a ₹/Rs/Rs./INR
+ * prefix, or when it's the segment after a trailing "|" pipe separator.
  */
 
 // A leading "1." / "12)" / "৬." style marker (Arabic or Bengali digits).
@@ -25,13 +33,48 @@ function stripLeadingDash(text) {
   return text.replace(LEADING_DASH_PUNCT, '')
 }
 
+// A trailing "| 450" / "| ₹450" / "| Rs 450" segment — the pipe alone marks
+// it as a price, so the currency prefix is optional here.
+const PIPE_PRICE = /\|\s*(?:₹|Rs\.?|INR)?\s*([\d,]+(?:\.\d+)?)\s*$/i
+// A ₹450 / Rs. 450 / Rs 450 / INR 450 price anywhere else in the line — the
+// currency prefix is required so plain numbers in product names are safe.
+const INLINE_PRICE = /(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d+)?)/i
+
+/** Finds a price on the line (pipe-segment first, then inline-prefixed),
+ * returning the price and the line with that price text stripped out. */
+function extractPrice(line) {
+  const pipeMatch = line.match(PIPE_PRICE)
+  if (pipeMatch) {
+    return {
+      price: Number(pipeMatch[1].replace(/,/g, '')),
+      cleaned: line.slice(0, pipeMatch.index).trimEnd(),
+    }
+  }
+
+  const inlineMatch = line.match(INLINE_PRICE)
+  if (inlineMatch) {
+    const cleaned =
+      line.slice(0, inlineMatch.index) + line.slice(inlineMatch.index + inlineMatch[0].length)
+    return {
+      price: Number(inlineMatch[1].replace(/,/g, '')),
+      cleaned: cleaned.replace(/\s{2,}/g, ' ').trim(),
+    }
+  }
+
+  return { price: null, cleaned: line }
+}
+
 /**
- * Parses one line into { name, notes } or null if it should be skipped
- * (blank line, or a category header — see module doc above).
+ * Parses one line into { name, notes, estimated_price } or null if it
+ * should be skipped (blank line, or a category header — see module doc
+ * above).
  */
 function parseLine(rawLine) {
-  const line = rawLine.trim()
+  let line = rawLine.trim()
   if (!line) return null
+
+  const { price, cleaned } = extractPrice(line)
+  line = cleaned
 
   // A real product line always starts with a plain number+period — headers
   // that are wrapped in ** (e.g. "**1. Clinical Skincare**") fail this match
@@ -72,10 +115,10 @@ function parseLine(rawLine) {
   const name = brand ? `${boldText} (${brand})` : boldText
   const notes = stripLeadingDash(after).replace(/\s{2,}/g, ' ').trim()
 
-  return { name, notes }
+  return { name, notes, estimated_price: price != null ? price : '' }
 }
 
-/** Parses pasted text into an array of { name, notes } products. */
+/** Parses pasted text into an array of { name, notes, estimated_price } products. */
 export function parseBulkImport(raw) {
   if (!raw) return []
   return raw

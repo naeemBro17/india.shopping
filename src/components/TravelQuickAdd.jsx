@@ -54,7 +54,6 @@ export default function TravelQuickAdd() {
           onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ''))}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
           placeholder="0"
-          autoFocus
           className="flex-1 min-w-0 min-h-[52px] bg-transparent text-[24px] font-bold outline-none placeholder:text-text-secondary/40"
         />
         <div className="flex rounded-full border border-border p-[3px] shrink-0">

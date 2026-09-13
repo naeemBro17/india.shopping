@@ -9,7 +9,7 @@
  *   subtitle,   // e.g. a date line, shown muted under the title
  *   sections: [
  *     {
- *       heading,      // optional section heading, e.g. "India (₹ INR)"
+ *       heading,      // optional section heading, e.g. "India (INR)"
  *       table: {      // optional table
  *         columns: [{ label, align: 'left' | 'right', width }], // width = fraction of content width
  *         rows: [[cell, cell, ...], ...],
@@ -19,7 +19,11 @@
  *   ],
  *   totals: [{ label, emphasize }],   // bottom block, below a divider
  *   note,        // optional small italic note at the very bottom
+ *   footer,      // optional small line pinned to the bottom of the last page
  * })
+ *
+ * Use `pdfMoney(amount, currency)` (exported below) for any ₹/৳ amount that
+ * goes into a PDF string — see its own doc comment for why.
  *
  * Returns a Promise. jsPDF is loaded via dynamic import so it stays out of
  * the main app bundle and is only fetched the first time someone actually
@@ -28,6 +32,19 @@
 
 const MARGIN = 14
 const LINE_H = 6
+
+/**
+ * ₹ and ৳ (U+20B9 / U+09F3) aren't in jsPDF's base14 font encodings — they
+ * render as a garbled fallback glyph (a stray superscript "1"), and having
+ * one in a string can throw off character spacing for the whole line.
+ * PDF text uses these plain-ASCII prefixes instead; the on-screen app UI is
+ * unaffected — it keeps using ₹/৳ via formatINR/formatBDT in ui.jsx.
+ */
+export function pdfMoney(amount, currency = 'INR') {
+  const v = Number(amount) || 0
+  const n = v.toLocaleString('en-IN', { maximumFractionDigits: 0 })
+  return currency === 'BDT' ? `Tk. ${n}` : `Rs. ${n}`
+}
 
 function ensureSpace(doc, y, needed = LINE_H) {
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -84,9 +101,14 @@ export async function buildAndDownloadDocument({
   sections = [],
   totals = [],
   note,
+  footer,
 }) {
   const { jsPDF } = await import('jspdf')
   const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+  // Belt-and-suspenders: make sure no character-spacing is in effect — a
+  // non-zero charSpace (or a font fallback triggered by an unsupported
+  // glyph) is what makes text render with a gap between every letter.
+  doc.setCharSpace(0)
   const pageWidth = doc.internal.pageSize.getWidth()
   const contentWidth = pageWidth - MARGIN * 2
   let y = MARGIN
@@ -159,6 +181,19 @@ export async function buildAndDownloadDocument({
     doc.setTextColor(120)
     const wrapped = doc.splitTextToSize(note, contentWidth)
     doc.text(wrapped, MARGIN, y)
+    doc.setTextColor(20)
+  }
+
+  // A short receipt otherwise sits at the top of a mostly-empty A4 page and
+  // reads as truncated — a footer signature on the last page makes it read
+  // as intentional instead.
+  if (footer) {
+    const pageHeight = doc.internal.pageSize.getHeight()
+    doc.setFont('helvetica', 'normal')
+    doc.setCharSpace(0)
+    doc.setFontSize(8.5)
+    doc.setTextColor(150)
+    doc.text(footer, MARGIN, pageHeight - 8)
     doc.setTextColor(20)
   }
 

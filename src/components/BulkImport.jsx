@@ -39,7 +39,7 @@ export default function BulkImport({ open, onClose }) {
           rows={7}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Paste your list here — one product per line"
+          placeholder="One product per line. Add a price with | 450 at the end of a line."
           className="min-h-[150px]"
         />
 
@@ -52,6 +52,9 @@ export default function BulkImport({ open, onClose }) {
             {parsed.map((p, i) => (
               <p key={i} className="text-[13.5px] text-text-primary truncate">
                 {i + 1}. {p.name}
+                {p.estimated_price !== '' && (
+                  <span className="text-text-secondary"> — ₹{p.estimated_price}</span>
+                )}
               </p>
             ))}
           </div>

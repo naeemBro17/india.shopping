@@ -68,3 +68,56 @@ export function markBoughtWithFeedback(product, toggle) {
   if (!product.is_bought) boughtFeedback()
   toggle(product.id)
 }
+
+/**
+ * "Shopping mode on" cue — a short rising two-note tone, distinct from the
+ * checkbox tick and reserved for the bigger "the trip has begun" moment.
+ * Total runtime stays well under 400ms.
+ */
+function risingTone() {
+  if (useStore.getState().settings.muted) return
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!AC) return
+    ctx = ctx || new AC()
+    if (ctx.state === 'suspended') ctx.resume()
+
+    const now = ctx.currentTime
+    const notes = [
+      { freq: 660, start: 0, dur: 0.13 },
+      { freq: 990, start: 0.12, dur: 0.16 },
+    ]
+    notes.forEach(({ freq, start, dur }) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, now + start)
+      gain.gain.setValueAtTime(0.0001, now + start)
+      gain.gain.exponentialRampToValueAtTime(0.09, now + start + 0.015)
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + start + dur)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(now + start)
+      osc.stop(now + start + dur + 0.02)
+    })
+  } catch {
+    /* audio not available — ignore */
+  }
+}
+
+/** Short double-pulse vibration — bigger than the single checkbox tap. */
+function startShoppingHaptic() {
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+    try {
+      navigator.vibrate([15, 40, 25])
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/** Fire haptic + tone for the "Start Shopping" moment. */
+export function startShoppingFeedback() {
+  startShoppingHaptic()
+  risingTone()
+}
