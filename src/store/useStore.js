@@ -31,6 +31,57 @@ const DEFAULT_CURRENCY = {
   ],
 }
 
+/* ---------- travel expenses (Part B — separate ledger, own screen) ---------- */
+
+export const TRAVEL_CATEGORIES = [
+  'Food',
+  'Transport',
+  'Sightseeing',
+  'Shopping',
+  'Accommodation',
+  'Other',
+]
+
+// Decorative per-category dot colours — fixed across themes (data-series
+// colour coding, not a theme token), chosen muted enough to sit quietly in
+// any of the three palettes.
+export const TRAVEL_CATEGORY_COLORS = {
+  Food: '#d18b5c',
+  Transport: '#6b8ca8',
+  Sightseeing: '#9b8ac0',
+  Shopping: '#7ba694',
+  Accommodation: '#a8626d',
+  Other: '#8b949e',
+}
+
+const DEFAULT_TRAVEL_SETTINGS = {
+  budget_amount: 0,
+  budget_currency: 'BDT', // 'BDT' before conversion, 'INR' after
+  trip_days: 0,
+  conversion_rate: null, // ৳ to ₹ rate, null until "Convert money"
+  converted_at: null,
+  last_used_currency: 'BDT',
+}
+
+function newTravelExpense(data = {}) {
+  return {
+    id: uid(),
+    amount: Number(data.amount) || 0,
+    currency: data.currency === 'INR' ? 'INR' : 'BDT',
+    category: (data.category || '').trim() || 'Other',
+    note: (data.note || '').trim(),
+    created_at: Date.now(),
+  }
+}
+
+/** Convert an amount between BDT/INR using the single stored trip rate (৳1 = ₹rate). */
+export function convertTravelAmount(amount, fromCurrency, toCurrency, rate) {
+  const n = Number(amount) || 0
+  if (fromCurrency === toCurrency) return n
+  if (!rate) return n
+  return fromCurrency === 'BDT' ? n * rate : n / rate
+}
+
 function newProduct(data = {}) {
   return {
     id: uid(),
@@ -57,6 +108,8 @@ export const useStore = create(
       stores: DEFAULT_STORES,
       settings: DEFAULT_SETTINGS,
       currency: DEFAULT_CURRENCY,
+      travel_expenses: [],
+      travel_settings: DEFAULT_TRAVEL_SETTINGS,
 
       /* ---------- products ---------- */
       addProduct: (data) =>
@@ -229,6 +282,67 @@ export const useStore = create(
           },
         })),
 
+      /* ---------- travel expenses (separate ledger from shopping) ---------- */
+      addTravelExpense: (data) =>
+        set((s) => ({
+          travel_expenses: [newTravelExpense(data), ...s.travel_expenses],
+          travel_settings: {
+            ...s.travel_settings,
+            last_used_currency: data.currency === 'INR' ? 'INR' : 'BDT',
+          },
+        })),
+
+      updateTravelExpense: (id, patch) =>
+        set((s) => ({
+          travel_expenses: s.travel_expenses.map((e) =>
+            e.id === id
+              ? {
+                  ...e,
+                  ...patch,
+                  amount: patch.amount != null ? Number(patch.amount) || 0 : e.amount,
+                  category: patch.category != null
+                    ? (patch.category || '').trim() || 'Other'
+                    : e.category,
+                }
+              : e
+          ),
+        })),
+
+      deleteTravelExpense: (id) =>
+        set((s) => ({
+          travel_expenses: s.travel_expenses.filter((e) => e.id !== id),
+        })),
+
+      updateTravelSettings: (patch) =>
+        set((s) => ({ travel_settings: { ...s.travel_settings, ...patch } })),
+
+      setTravelBudget: (budget_amount, trip_days) =>
+        set((s) => ({
+          travel_settings: {
+            ...s.travel_settings,
+            budget_amount: Number(budget_amount) || 0,
+            trip_days: Number(trip_days) || 0,
+          },
+        })),
+
+      /** The one-time "convert money" switch — from now on the whole screen displays ₹. */
+      convertTravelMoney: (rate) =>
+        set((s) => ({
+          travel_settings: {
+            ...s.travel_settings,
+            conversion_rate: Number(rate) || 0,
+            converted_at: Date.now(),
+            budget_currency: 'INR',
+            last_used_currency: 'INR',
+          },
+        })),
+
+      /** Correcting a mistyped rate afterwards — everything derives from this, so it just updates. */
+      updateTravelConversionRate: (rate) =>
+        set((s) => ({
+          travel_settings: { ...s.travel_settings, conversion_rate: Number(rate) || 0 },
+        })),
+
       /* ---------- danger zone ---------- */
       clearAllData: () =>
         set(() => ({
@@ -243,6 +357,8 @@ export const useStore = create(
               { id: uid(), label: 'Agent / cash', value: '' },
             ],
           },
+          travel_expenses: [],
+          travel_settings: DEFAULT_TRAVEL_SETTINGS,
         })),
     }),
     {
@@ -253,6 +369,8 @@ export const useStore = create(
         stores: s.stores,
         settings: s.settings,
         currency: s.currency,
+        travel_expenses: s.travel_expenses,
+        travel_settings: s.travel_settings,
       }),
     }
   )
@@ -270,6 +388,38 @@ export function activeStoreIds(products) {
   const set = new Set()
   products.forEach((p) => (p.store_ids || []).forEach((id) => set.add(id)))
   return set
+}
+
+/** The trip's current display currency — 'BDT' before conversion, 'INR' after. */
+export function travelDisplayCurrency(travel_settings) {
+  return travel_settings.budget_currency === 'INR' ? 'INR' : 'BDT'
+}
+
+/** Trip budget total, expressed in the current display currency. */
+export function travelBudgetTotal(travel_settings) {
+  const display = travelDisplayCurrency(travel_settings)
+  return convertTravelAmount(
+    travel_settings.budget_amount,
+    'BDT',
+    display,
+    travel_settings.conversion_rate
+  )
+}
+
+/** Sum of expenses (optionally filtered), converted into the display currency. */
+export function travelSpent(expenses, travel_settings) {
+  const display = travelDisplayCurrency(travel_settings)
+  return expenses.reduce(
+    (sum, e) =>
+      sum + convertTravelAmount(e.amount, e.currency, display, travel_settings.conversion_rate),
+    0
+  )
+}
+
+export function travelIsToday(created_at) {
+  const d = new Date(created_at)
+  const now = new Date()
+  return d.toDateString() === now.toDateString()
 }
 
 export const PRIORITY_META = {

@@ -160,6 +160,13 @@ export const ReceiptIcon = (p) => (
   </Svg>
 )
 
+export const PlaneIcon = (p) => (
+  <Svg {...p}>
+    <path d="M22 2 11 13" />
+    <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+  </Svg>
+)
+
 export const SparkIcon = (p) => (
   <Svg {...p}>
     <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />

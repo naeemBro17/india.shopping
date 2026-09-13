@@ -1,13 +1,14 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useMemo } from 'react'
 import { cx } from './ui.jsx'
-import { HomeIcon, BagIcon, StoreIcon, CartIcon, CoinIcon } from './Icons.jsx'
+import { HomeIcon, BagIcon, StoreIcon, CartIcon, PlaneIcon, CoinIcon } from './Icons.jsx'
 
 const TABS = [
   { to: '/', label: 'Home', icon: HomeIcon, match: (p) => p === '/' },
   { to: '/products', label: 'Products', icon: BagIcon, match: (p) => p.startsWith('/products') },
   { to: '/stores', label: 'Stores', icon: StoreIcon, match: (p) => p.startsWith('/stores') },
   { to: '/shopping', label: 'Shopping', icon: CartIcon, match: (p) => p.startsWith('/shopping') },
+  { to: '/travel', label: 'Travel', icon: PlaneIcon, match: (p) => p.startsWith('/travel') },
   { to: '/currency', label: 'Currency', icon: CoinIcon, match: (p) => p.startsWith('/currency') },
 ]
 

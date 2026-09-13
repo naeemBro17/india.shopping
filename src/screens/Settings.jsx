@@ -40,6 +40,8 @@ export default function Settings() {
       stores: state.stores,
       settings: state.settings,
       currency: state.currency,
+      travel_expenses: state.travel_expenses,
+      travel_settings: state.travel_settings,
       exported_at: new Date().toISOString(),
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -86,6 +88,12 @@ export default function Settings() {
       currency: pendingImport.currency
         ? { ...s.currency, ...pendingImport.currency }
         : s.currency,
+      travel_expenses: Array.isArray(pendingImport.travel_expenses)
+        ? pendingImport.travel_expenses
+        : s.travel_expenses,
+      travel_settings: pendingImport.travel_settings
+        ? { ...s.travel_settings, ...pendingImport.travel_settings }
+        : s.travel_settings,
     }))
     setPendingImport(null)
     toast('Data restored', { tone: 'success' })
@@ -236,8 +244,8 @@ export default function Settings() {
           <div className="px-4 py-3.5">
             <p className="text-[15px] font-medium text-accent-warm">Clear all data</p>
             <p className="text-[12.5px] text-text-secondary mt-0.5">
-              Removes every product, resets stores to defaults, and wipes settings and
-              saved rates. This cannot be undone.
+              Removes every product, resets stores to defaults, and wipes settings,
+              saved rates, and travel expenses. This cannot be undone.
             </p>
             <button
               onClick={() => {

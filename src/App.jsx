@@ -11,6 +11,7 @@ import Stores from './screens/Stores.jsx'
 import StoreDetail from './screens/StoreDetail.jsx'
 import Shopping from './screens/Shopping.jsx'
 import ShoppingStore from './screens/ShoppingStore.jsx'
+import Travel from './screens/Travel.jsx'
 import Currency from './screens/Currency.jsx'
 import Settings from './screens/Settings.jsx'
 import Receipt from './screens/Receipt.jsx'
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/stores/:id" element={<StoreDetail />} />
             <Route path="/shopping" element={<Shopping />} />
             <Route path="/shopping/:id" element={<ShoppingStore />} />
+            <Route path="/travel" element={<Travel />} />
             <Route path="/currency" element={<Currency />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/receipt" element={<Receipt />} />
