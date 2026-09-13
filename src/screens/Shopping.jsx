@@ -5,7 +5,7 @@ import { useToast } from '../hooks/useToast.js'
 import TopBar from '../components/TopBar.jsx'
 import StoreRow from '../components/StoreRow.jsx'
 import { Card, Button, ProgressBar } from '../components/ui.jsx'
-import { CartIcon, CheckIcon } from '../components/Icons.jsx'
+import { CartIcon, CheckIcon, ReceiptIcon } from '../components/Icons.jsx'
 
 export default function Shopping() {
   const navigate = useNavigate()
@@ -120,6 +120,11 @@ export default function Shopping() {
             </div>
           )}
         </Card>
+
+        <Button variant="secondary" className="w-full" onClick={() => navigate('/receipt')}>
+          <ReceiptIcon size={18} />
+          View Receipt
+        </Button>
 
         <Button
           variant="ghost"

@@ -146,6 +146,20 @@ export const ImportIcon = (p) => (
   </Svg>
 )
 
+export const DownloadIcon = (p) => (
+  <Svg {...p}>
+    <path d="M12 3v12m0 0 4-4m-4 4-4-4" />
+    <path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
+  </Svg>
+)
+
+export const ReceiptIcon = (p) => (
+  <Svg {...p}>
+    <path d="M6 2h12v20l-2.5-1.5L13 22l-2.5-1.5L8 22l-2-1.5V2Z" />
+    <path d="M8.5 7h7M8.5 10.5h7M8.5 14h4.5" />
+  </Svg>
+)
+
 export const SparkIcon = (p) => (
   <Svg {...p}>
     <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />

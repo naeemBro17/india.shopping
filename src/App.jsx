@@ -13,6 +13,7 @@ import Shopping from './screens/Shopping.jsx'
 import ShoppingStore from './screens/ShoppingStore.jsx'
 import Currency from './screens/Currency.jsx'
 import Settings from './screens/Settings.jsx'
+import Receipt from './screens/Receipt.jsx'
 
 const ACCENT_CLASSES = ['theme-blue', 'theme-violet', 'theme-orange']
 
@@ -46,6 +47,7 @@ export default function App() {
             <Route path="/shopping/:id" element={<ShoppingStore />} />
             <Route path="/currency" element={<Currency />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/receipt" element={<Receipt />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStore, DEFAULT_STORES } from '../store/useStore.js'
 import { useToast } from '../hooks/useToast.js'
 import { useOnlineStatus } from '../hooks/useOnlineStatus.js'
 import TopBar from '../components/TopBar.jsx'
 import { Card, Switch, Button, cx } from '../components/ui.jsx'
-import { TrashIcon } from '../components/Icons.jsx'
+import { TrashIcon, ReceiptIcon, ChevronRight } from '../components/Icons.jsx'
 
 const APP_VERSION = '1.0.0'
 
@@ -15,6 +16,7 @@ const ACCENT_THEMES = [
 ]
 
 export default function Settings() {
+  const navigate = useNavigate()
   const settings = useStore((s) => s.settings)
   const updateSettings = useStore((s) => s.updateSettings)
   const toggleDarkMode = useStore((s) => s.toggleDarkMode)
@@ -129,6 +131,24 @@ export default function Settings() {
               className="w-full min-h-[44px] px-3 rounded-[10px] bg-surface-2 border border-border text-[15px] outline-none focus:border-accent"
             />
           </div>
+        </Card>
+
+        <Card className="overflow-hidden">
+          <button
+            onClick={() => navigate('/receipt')}
+            className="w-full flex items-center gap-3 px-4 py-3.5 active:bg-surface-2 transition"
+          >
+            <span className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-text-secondary shrink-0">
+              <ReceiptIcon size={18} />
+            </span>
+            <span className="flex-1 text-left">
+              <p className="text-[15px] font-medium">Shopping receipt</p>
+              <p className="text-[12.5px] text-text-secondary mt-0.5">
+                See and download what you've bought
+              </p>
+            </span>
+            <ChevronRight size={18} className="text-text-secondary shrink-0" />
+          </button>
         </Card>
 
         <Card className="p-4">
