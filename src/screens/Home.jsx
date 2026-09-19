@@ -61,27 +61,19 @@ export default function Home() {
       />
 
       <div className="px-4 pt-4 pb-6 space-y-5">
-        <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
-          <div className="w-[130px] shrink-0">
-            <StatCard label="Products" value={stats.total} />
-          </div>
-          <div className="w-[130px] shrink-0">
-            <StatCard
-              label="Must buy left"
-              value={stats.mustBuyLeft}
-              progress={{ value: stats.mustBuyDone, total: stats.mustBuyTotal }}
-            />
-          </div>
-          <div className="w-[130px] shrink-0">
-            <StatCard
-              label="Bought"
-              value={stats.bought}
-              progress={{ value: stats.bought, total: stats.total }}
-            />
-          </div>
-          <div className="w-[130px] shrink-0">
-            <StatCard label="Stores in use" value={stats.storesInUse} />
-          </div>
+        <div className="grid grid-cols-2 gap-2.5">
+          <StatCard label="Products" value={stats.total} />
+          <StatCard
+            label="Must buy left"
+            value={stats.mustBuyLeft}
+            progress={{ value: stats.mustBuyDone, total: stats.mustBuyTotal }}
+          />
+          <StatCard
+            label="Bought"
+            value={stats.bought}
+            progress={{ value: stats.bought, total: stats.total }}
+          />
+          <StatCard label="Stores in use" value={stats.storesInUse} />
         </div>
 
         <Card className="p-4">

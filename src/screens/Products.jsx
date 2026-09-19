@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { useStore, PRIORITY_ORDER } from '../store/useStore.js'
 import TopBar from '../components/TopBar.jsx'
 import ProductRow from '../components/ProductRow.jsx'
@@ -30,6 +30,8 @@ export default function Products() {
   const toggleBought = useStore((s) => s.toggleBought)
 
   const [params, setParams] = useSearchParams()
+  const location = useLocation()
+  const navigate = useNavigate()
   const [adding, setAdding] = useState(params.get('add') === '1')
   const [bulkOpen, setBulkOpen] = useState(false)
   const [searching, setSearching] = useState(false)
@@ -43,6 +45,24 @@ export default function Products() {
     if (params.get('add') === '1') setParams({}, { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Opening the edit sheet pushes a history entry, so the phone's hardware
+  // Back button closes the sheet (landing back on Products) instead of
+  // skipping past it to whatever route came before Products.
+  function openEditing(product) {
+    navigate(location.pathname + location.search, { state: { productSheet: true } })
+    setEditing(product)
+  }
+
+  function closeEditing() {
+    if (location.state?.productSheet) navigate(-1)
+    else setEditing(null)
+  }
+
+  useEffect(() => {
+    if (!location.state?.productSheet) setEditing(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location])
 
   useEffect(() => {
     if (searching) searchRef.current?.focus()
@@ -175,7 +195,7 @@ export default function Products() {
                 product={p}
                 stores={stores}
                 showStoreTag
-                onOpen={setEditing}
+                onOpen={openEditing}
                 onToggle={onToggle}
               />
             ))}
@@ -208,7 +228,7 @@ export default function Products() {
                         product={p}
                         stores={stores}
                         showStoreTag
-                        onOpen={setEditing}
+                        onOpen={openEditing}
                         onToggle={onToggle}
                       />
                     ))}
@@ -220,7 +240,7 @@ export default function Products() {
         )}
       </div>
 
-      <ProductSheet state={editing} onClose={() => setEditing(null)} />
+      <ProductSheet state={editing} onClose={closeEditing} />
 
       <FAB label="Add product" onClick={() => setAdding((v) => !v)} />
     </div>

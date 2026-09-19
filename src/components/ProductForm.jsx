@@ -57,7 +57,7 @@ export default function ProductForm({ initial, isEdit, stores, onSubmit, onCance
       <Field label="Product name">
         <TextInput
           ref={nameRef}
-          autoFocus
+          autoFocus={!isEdit}
           value={name}
           onChange={(e) => {
             setName(e.target.value)
