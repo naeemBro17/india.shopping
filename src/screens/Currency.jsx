@@ -30,8 +30,11 @@ export default function Currency() {
 
   const computed = useMemo(() => {
     const list = rates.map((r) => {
-      const rate = Number(r.value)
-      const valid = r.value !== '' && !Number.isNaN(rate) && rate > 0
+      // Entered as a per-100 rate (how money changers quote); divide by 100
+      // once here to get the per-1 factor used for all downstream math.
+      const entered = Number(r.value)
+      const rate = entered / 100
+      const valid = r.value !== '' && !Number.isNaN(entered) && entered > 0
       return { ...r, rate, valid, result: valid ? amount * rate : null }
     })
     let bestId = null
@@ -157,7 +160,7 @@ export default function Currency() {
 
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[12px] text-text-secondary shrink-0">
-                    1 {fromName} =
+                    100 {fromName} =
                   </span>
                   <input
                     type="text"

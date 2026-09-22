@@ -8,13 +8,16 @@ import { Button, formatBDT, formatINR } from './ui.jsx'
  * reused (via `isEdit`) from Travel settings to correct a mistyped rate.
  */
 export default function ConvertMoneySheet({ open, onClose, onConfirm, isEdit, currentRate }) {
-  const [rate, setRate] = useState(currentRate ? String(currentRate) : '')
+  // currentRate is stored as a per-1 factor; show it to the user as per-100,
+  // matching how money changers quote (e.g. "100 BDT = 80.5 INR").
+  const [rate, setRate] = useState(currentRate ? String(currentRate * 100) : '')
   const n = Number(rate)
   const valid = n > 0
+  const perOne = n / 100
 
   function confirm() {
     if (!valid) return
-    onConfirm(n)
+    onConfirm(perOne)
     onClose()
   }
 
@@ -29,10 +32,10 @@ export default function ConvertMoneySheet({ open, onClose, onConfirm, isEdit, cu
 
         <div>
           <label className="block text-[13px] font-medium text-text-secondary mb-1.5">
-            ৳1 = ₹____
+            100 BDT = ₹____
           </label>
           <div className="flex items-center gap-2 rounded-[10px] bg-surface-2 border border-border px-3 focus-within:border-accent transition">
-            <span className="text-[15px] font-semibold text-text-secondary shrink-0">৳1 =</span>
+            <span className="text-[15px] font-semibold text-text-secondary shrink-0">100 ৳ =</span>
             <span className="text-[20px] font-bold text-text-secondary shrink-0">₹</span>
             <input
               type="text"
@@ -46,7 +49,7 @@ export default function ConvertMoneySheet({ open, onClose, onConfirm, isEdit, cu
           </div>
           <p className="text-[13px] text-text-secondary mt-2">
             {valid
-              ? `${formatBDT(10000)} = ${formatINR(10000 * n)}`
+              ? `${formatBDT(10000)} = ${formatINR(10000 * perOne)}`
               : 'e.g. ৳10,000 = ₹—'}
           </p>
         </div>
